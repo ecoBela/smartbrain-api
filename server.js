@@ -1,9 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt-nodejs");
+const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 const database = {
   users: [
@@ -11,6 +13,7 @@ const database = {
       id: "123",
       name: "Winnie",
       email: "Winnie@theBear.com",
+      password: "honey",
       entries: 0,
       joined: new Date(),
     },
@@ -18,15 +21,9 @@ const database = {
       id: "124",
       name: "Eyeore",
       email: "Eyeore@theShack.com",
+      password: "pessimism",
       entries: 0,
       joined: new Date(),
-    },
-  ],
-  login: [
-    {
-      id: "222",
-      email: "Winnie@theBear.com",
-      hash: "",
     },
   ],
 };
@@ -36,27 +33,27 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
-  bcrypt.compare(
-    "snacks",
-    "$2a$10$cq1avQ6ABoMCjSP5Baa88eHZyLYDDX0o/Lev0LPjnRjVgF6/yBUQy",
-    function (err, res) {
-      console.log("first guess", res);
-      // res == true;
-    }
-  );
-  bcrypt.compare(
-    "veggies",
-    "$2a$10$cq1avQ6ABoMCjSP5Baa88eHZyLYDDX0o/Lev0LPjnRjVgF6/yBUQy",
-    function (err, res) {
-      console.log("second guess", res);
-      // res = false;
-    }
-  );
+  //   bcrypt.compare(
+  //     "snacks",
+  //     "$2a$10$cq1avQ6ABoMCjSP5Baa88eHZyLYDDX0o/Lev0LPjnRjVgF6/yBUQy",
+  //     function (err, res) {
+  //       console.log("first guess", res);
+  //       // res == true;
+  //     }
+  //   );
+  //   bcrypt.compare(
+  //     "veggies",
+  //     "$2a$10$cq1avQ6ABoMCjSP5Baa88eHZyLYDDX0o/Lev0LPjnRjVgF6/yBUQy",
+  //     function (err, res) {
+  //       console.log("second guess", res);
+  //       // res = false;
+  //     }
+  //   );
   if (
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
   ) {
-    res.json("success");
+    res.json(database.users[0]);
   } else {
     res.status(400).json("error logging in");
   }
@@ -69,7 +66,6 @@ app.post("/register", (req, res) => {
     id: "125",
     name: name,
     email: email,
-    password: password,
     entries: 0,
     joined: new Date(),
   });
