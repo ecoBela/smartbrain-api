@@ -15,34 +15,9 @@ const db = knex({
   },
 });
 
-// db.select("*")
-//   .from("users")
-//   .then((data) => console.log(data));
-
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
-
-const database = {
-  users: [
-    {
-      id: "123",
-      name: "Winnie",
-      email: "Winnie@theBear.com",
-      password: "honey",
-      entries: 0,
-      joined: new Date(),
-    },
-    {
-      id: "124",
-      name: "Eyeore",
-      email: "Eyeore@theShack.com",
-      password: "pessimism",
-      entries: 0,
-      joined: new Date(),
-    },
-  ],
-};
 
 app.get("/", (req, res) => {
   res.send("Success");
@@ -65,7 +40,7 @@ app.post("/signin", (req, res) => {
             .catch((err) => res.status(400).json("unable to get user"))
         : res.status(400).json("wrong credentials");
     })
-    .catch((err) => res.json("wrong credentials"));
+    .catch((err) => res.status(400).json("wrong credentials"));
 });
 
 app.post("/register", (req, res) => {
@@ -118,7 +93,7 @@ app.put("/image", (req, res) => {
     .increment("entries", 1)
     .returning("entries")
     .then((entries) => {
-      res.json(entries[0]);
+      res.json(entries[0].entries);
     })
     .catch((err) => res.status(400).json("unable to get entries"));
 
@@ -128,12 +103,6 @@ app.put("/image", (req, res) => {
   //     res.status(400).json("not found");
   //   }
 });
-
-bcrypt.hash("bacon", null, null, function (err, hash) {
-  // Store hash in your password DB.
-});
-
-// Load hash from your password DB.
 
 app.listen(3001, () => {
   console.log("App running on port 3001");
